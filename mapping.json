@@ -1,0 +1,92 @@
+{
+  "template": "githubarchive-*",
+  "aliases" : {
+      "githubarchive" : {},
+      "githubarchive-issuesevent" : {
+          "filter" : {
+              "term" : {"type" : "IssuesEvent" }
+          }
+      },
+      "githubarchive-prevent" : {
+          "filter" : {
+              "term" : {"type" : "PullRequestEvent" }
+          }
+      },
+      "githubarchive-pushevent" : {
+          "filter" : {
+              "term" : {"type" : "PushEvent" }
+          }
+      }
+  },
+  "settings" : {
+    "number_of_shards" : 1,
+    "number_of_replicas" : 1,
+    "refresh_interval" : "30s"
+  },
+  "mappings": {
+    "_default_": {
+      "dynamic_templates": [
+        {
+          "bodies": {
+            "path_match": "*body",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "analyzer": "standard"
+            }
+          }
+        },
+        {
+          "titles": {
+            "path_match": "*title",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "analyzer": "standard"
+            }
+          }
+        },
+        {
+          "descriptions": {
+            "path_match": "*description",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "analyzer": "standard"
+            }
+          }
+        },
+        {
+          "diff_hunk": {
+            "path_match": "*diff_hunk",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "analyzer": "standard"
+            }
+          }
+        },
+        {
+          "messages": {
+            "path_match": "*message",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "analyzer": "standard"
+            }
+          }
+        },
+        {
+          "keywords": {
+            "match_mapping_type": "string",
+            "mapping": {
+              "type": "string",
+              "index": "not_analyzed",
+              "analyzer": "standard"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
