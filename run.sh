@@ -13,8 +13,6 @@ find data/*.json.gz -type f -print0 | xargs -0 -P 8 zgrep --no-filename ',"name"
 #find data/2016-*.json.gz -type f -print0 | parallel -j+1 zgrep --no-filename ',"name":"elastic/' >> output.json
 mv -v data/*.json.gz data/done
 
-# (RE) INITIALIZE TEMPLATE
-
 if [ $(curl -XHEAD -u ${USER1}:${PASS1} -I ${HOST1}/_template/githubarchive --head | grep "404 Not Found" > /dev/null) ]; then
     echo "Putting template on ${HOST1}"
     curl -XPUT -u ${USER1}:${PASS1} ${HOST1}/_template/githubarchive -d @mapping.json
@@ -32,7 +30,6 @@ curl -XPUT -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_settings" -d '{
 
 # PUSH TO LOGSTASH
 cat output.json | logstash -f logstash.conf
-cat output.json | ../5.0.0/logstash-5.0.0/bin/logstash -f logstash5.conf
 
 # ARCHIVE OUTPUT FILE
 today=`date +%Y-%m-%d.%H%M%S`
