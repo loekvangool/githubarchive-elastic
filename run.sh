@@ -2,37 +2,29 @@
 
 export YEAR=`date +%Y`
 
-# REPOSITORY NAME PATTERN, EITHER ORG OR REPO LEVEL
-# Examples:
-#   "yahoo/"
-#   "gztchan/awesome-design"
-#   "nodejs/node"
-export PATTERN="__SET_PATTERN__"
+# ELASTICSEARCH ACCOUNT
+export USER1=""
+export PASS1=""
+export HOST1=""
 
-# PRIVATE ES CLOUD ACCOUNT
-export USER=foo
-export PASS=bar
-export HOST=update_me
-
-# EXTRACT MAIN ELASTIC REPOS
+# EXTRACT ALL PUBLIC ELASTIC REPOS
 echo "Extracting relevant data..."
-find data/*.json.gz -type f -print0 | xargs -0 -P 8 zgrep --no-filename ",\"name\":\"${PATTERN}" >> output.json
+find data/*.json.gz -type f -print0 | xargs -0 -P 8 zgrep --no-filename ',"name":"elastic/' >> output.json
 #find data/2016-*.json.gz -type f -print0 | parallel -j+1 zgrep --no-filename ',"name":"elastic/' >> output.json
 mv -v data/*.json.gz data/done
 
 # (RE) INITIALIZE TEMPLATE
-# curl -XDELETE -u ${USER}:${PASS} ${HOST}/githubarchive-*
 
-if [ $(curl -XHEAD -u ${USER}:${PASS} -I ${HOST}/_template/githubarchive --head | grep "404 Not Found" > /dev/null) ]; then
-    echo "Putting template on ${HOST}"
-    curl -XPUT -u ${USER}:${PASS} ${HOST}/_template/githubarchive -d @mapping.json
+if [ $(curl -XHEAD -u ${USER1}:${PASS1} -I ${HOST1}/_template/githubarchive --head | grep "404 Not Found" > /dev/null) ]; then
+    echo "Putting template on ${HOST1}"
+    curl -XPUT -u ${USER1}:${PASS1} ${HOST1}/_template/githubarchive -d @mapping.json
 fi
 
 # PUSH TO LOGSTASH
 echo "Push to Logstash"
 
 # PREPARE INGEST
-curl -XPUT -u ${USER}:${PASS} "${HOST}/githubarchive-*/_settings" -d '{
+curl -XPUT -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_settings" -d '{
     "index" : {
         "refresh_interval" : "-1"
     }
@@ -40,19 +32,22 @@ curl -XPUT -u ${USER}:${PASS} "${HOST}/githubarchive-*/_settings" -d '{
 
 # PUSH TO LOGSTASH
 cat output.json | logstash -f logstash.conf
+cat output.json | ../5.0.0/logstash-5.0.0/bin/logstash -f logstash5.conf
 
 # ARCHIVE OUTPUT FILE
 today=`date +%Y-%m-%d.%H%M%S`
 mv -v output.json output-archive-${today}.json
+gzip output-archive-${today}.json
 
 # FINALIZE INGEST AND MAPPING
-echo "Merging segments on ${HOST}"
-curl -XPOST -u ${USER}:${PASS} "${HOST}/githubarchive-*/_forcemerge?max_num_segments=1"
-curl -XPUT -u ${USER}:${PASS} "${HOST}/githubarchive-*/_settings" -d '{
+echo "Merging segments on ${HOST1}"
+curl -XPOST -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_forcemerge?max_num_segments=1"
+curl -XPUT -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_settings" -d '{
     "index" : {
-        "refresh_interval" : "1s"
+        "refresh_interval" : "30s"
     }
 }'
+echo 
 
 echo "Finished"
 exit 0
