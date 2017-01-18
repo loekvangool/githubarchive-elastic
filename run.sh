@@ -19,7 +19,7 @@ if [ $(curl -XHEAD -u ${USER1}:${PASS1} -I ${HOST1}/_template/githubarchive --he
 fi
 
 # PUSH TO LOGSTASH
-echo "Push to Logstash"
+echo "Preparing indices for ingestion on ${HOST1}"
 
 # PREPARE INGEST
 curl -XPUT -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_settings" -d '{
@@ -39,6 +39,8 @@ gzip output-archive-${today}.json
 # FINALIZE INGEST AND MAPPING
 echo "Merging segments on ${HOST1}"
 curl -XPOST -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_forcemerge?max_num_segments=1"
+
+echo "Restoring index settings on ${HOST1}"
 curl -XPUT -u ${USER1}:${PASS1} "${HOST1}/githubarchive-*/_settings" -d '{
     "index" : {
         "refresh_interval" : "30s"
