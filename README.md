@@ -17,9 +17,9 @@ Tested in OSX only, on Elasticsearch, Logstash and Kibana 5.1.x, with [X-Pack Se
 
 ##Automation
 Run daily:
-`0  5   *   *   *    cd ~/github-archive; php download.php; php run.php;`
+`0  5   *   *   *    cd ~/githubarchive-elastic; ./download.sh; ./run.sh;`
 
 Or, run hourly:
-`0  *   *   *   *    cd ~/github-archive; php download.php; php run.php;`
+`0  *   *   *   *    cd ~/githubarchive/elastic; ./download.sh; ./run.sh;`
 
 Note that `download.php` will download yesterday's data once per day, so you'll have to make sure that yesterday's data is complete, AND allow some time for possible late delivery. 05:00 UTC is usually enough for that. If you want more certainty, rig `download.php` to process more data than just yesterday's, or run the cron more often. Existing data will not be re-downloaded so you're free to run it as often as you like.
