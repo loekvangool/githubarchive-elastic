@@ -1,5 +1,12 @@
 # githubarchive-elastic
 Put your GitHub data in the [Elastic Stack](https://www.elastic.co/products).
+
+# Requirements:
+- Linux/OSX
+- cURL
+- Logstash locally
+- Elasticsearch, locally or in the [cloud](http://cloud.elastic.co)
+
 # Get Started:
 * Edit `logstash.conf` and `run.sh`. Fill in the Elasticsearch host, port, and optionally authentication details. In `run.sh`, also fill `PATTERN`, which describes which orgs/repos you want to store in Elasticsearch (there are examples)
 * Run `./download.sh bulk` to download all GitHub archives of 2015 and 2016, and/or
