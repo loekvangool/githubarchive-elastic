@@ -11,6 +11,7 @@ Tested in OSX only, on Elasticsearch, Logstash and Kibana 5.1.x, with [X-Pack Se
 ##Automation
 Run daily:
 `0  5   *   *   *    cd ~/github-archive; php download.php; php run.php;`
+
 Or, run hourly:
 `0  *   *   *   *    cd ~/github-archive; php download.php; php run.php;`
 
