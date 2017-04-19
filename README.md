@@ -15,7 +15,7 @@ Put your GitHub data in the [Elastic Stack](https://www.elastic.co/products).
 
 Tested in OSX only, on Elasticsearch, Logstash and Kibana 5.1.x, with [X-Pack Security](https://www.elastic.co/guide/en/x-pack/current/xpack-security.html) enabled.
 
-##Automation
+## Automation
 Run daily:
 `0  5   *   *   *    cd ~/githubarchive-elastic; ./download.sh; ./run.sh;`
 
