@@ -13,7 +13,7 @@ Put your GitHub data in the [Elastic Stack](https://www.elastic.co/products).
 * Run `./download.sh YYYY-MM-DD` to download all GitHub archives of a single day (you can use this for daily updates to an existing index)
 * At any time, you can run `./run.sh` to find the GitHub org/repo you're interested in, and export that to Elasticsearch
 
-Tested in OSX only, on Elasticsearch, Logstash and Kibana 5.1.x, with [X-Pack Security](https://www.elastic.co/guide/en/x-pack/current/xpack-security.html) enabled.
+Tested in OSX only, on Elasticsearch, Logstash and Kibana 5.1-5.3, with [X-Pack Security](https://www.elastic.co/guide/en/x-pack/current/xpack-security.html) enabled.
 
 ## Automation
 Run daily:
